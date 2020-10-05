@@ -1,0 +1,53 @@
+------------------------------------------------------------------------
+Benchmark                                 Time           CPU Iterations
+------------------------------------------------------------------------
+[0;32mquantize_per_channel/C:8/N:8     [m[0;33m     69578 ns      69409 ns [m[0;36m     10062[m
+[m[0;32mquantize_per_channel/C:8/N:16    [m[0;33m    131718 ns     131432 ns [m[0;36m      5253[m
+[m[0;32mquantize_per_channel/C:8/N:32    [m[0;33m    251159 ns     250752 ns [m[0;36m      2694[m
+[m[0;32mquantize_per_channel/C:8/N:64    [m[0;33m    534001 ns     530995 ns [m[0;36m      1396[m
+[m[0;32mquantize_per_channel/C:8/N:128   [m[0;33m   1054070 ns    1050022 ns [m[0;36m       649[m
+[m[0;32mquantize_per_channel/C:8/N:256   [m[0;33m   2100809 ns    2086175 ns [m[0;36m       334[m
+[m[0;32mquantize_per_channel/C:8/N:512   [m[0;33m   4163963 ns    4130090 ns [m[0;36m       167[m
+[m[0;32mquantize_per_channel/C:16/N:8    [m[0;33m    132237 ns     131624 ns [m[0;36m      5372[m
+[m[0;32mquantize_per_channel/C:16/N:16   [m[0;33m    262581 ns     261785 ns [m[0;36m      2682[m
+[m[0;32mquantize_per_channel/C:16/N:32   [m[0;33m    550271 ns     547790 ns [m[0;36m      1280[m
+[m[0;32mquantize_per_channel/C:16/N:64   [m[0;33m   1047562 ns    1043337 ns [m[0;36m       675[m
+[m[0;32mquantize_per_channel/C:16/N:128  [m[0;33m   2087677 ns    2075180 ns [m[0;36m       329[m
+[m[0;32mquantize_per_channel/C:16/N:256  [m[0;33m   4164620 ns    4123122 ns [m[0;36m       170[m
+[m[0;32mquantize_per_channel/C:16/N:512  [m[0;33m   8486561 ns    8416574 ns [m[0;36m        81[m
+[m[0;32mquantize_per_channel/C:32/N:8    [m[0;33m    265762 ns     264462 ns [m[0;36m      2657[m
+[m[0;32mquantize_per_channel/C:32/N:16   [m[0;33m    547476 ns     545424 ns [m[0;36m      1306[m
+[m[0;32mquantize_per_channel/C:32/N:32   [m[0;33m   1066886 ns    1061136 ns [m[0;36m       645[m
+[m[0;32mquantize_per_channel/C:32/N:64   [m[0;33m   2105732 ns    2081237 ns [m[0;36m       340[m
+[m[0;32mquantize_per_channel/C:32/N:128  [m[0;33m   4259356 ns    4222827 ns [m[0;36m       167[m
+[m[0;32mquantize_per_channel/C:32/N:256  [m[0;33m   8337617 ns    8282995 ns [m[0;36m        84[m
+[m[0;32mquantize_per_channel/C:32/N:512  [m[0;33m  16934013 ns   16810866 ns [m[0;36m        43[m
+[m[0;32mquantize_per_channel/C:64/N:8    [m[0;33m    534737 ns     533282 ns [m[0;36m      1310[m
+[m[0;32mquantize_per_channel/C:64/N:16   [m[0;33m   1066402 ns    1060358 ns [m[0;36m       634[m
+[m[0;32mquantize_per_channel/C:64/N:32   [m[0;33m   2190628 ns    2152093 ns [m[0;36m       343[m
+[m[0;32mquantize_per_channel/C:64/N:64   [m[0;33m   4235598 ns    4207188 ns [m[0;36m       161[m
+[m[0;32mquantize_per_channel/C:64/N:128  [m[0;33m   8478435 ns    8375098 ns [m[0;36m        82[m
+[m[0;32mquantize_per_channel/C:64/N:256  [m[0;33m  16390831 ns   16261479 ns [m[0;36m        42[m
+[m[0;32mquantize_per_channel/C:64/N:512  [m[0;33m  32695945 ns   32103045 ns [m[0;36m        22[m
+[m[0;32mquantize_per_channel/C:128/N:8   [m[0;33m   1114863 ns    1104204 ns [m[0;36m       643[m
+[m[0;32mquantize_per_channel/C:128/N:16  [m[0;33m   2180941 ns    2165958 ns [m[0;36m       322[m
+[m[0;32mquantize_per_channel/C:128/N:32  [m[0;33m   4281206 ns    4248176 ns [m[0;36m       165[m
+[m[0;32mquantize_per_channel/C:128/N:64  [m[0;33m   8225079 ns    8164784 ns [m[0;36m        84[m
+[m[0;32mquantize_per_channel/C:128/N:128 [m[0;33m  16831778 ns   16358510 ns [m[0;36m        44[m
+[m[0;32mquantize_per_channel/C:128/N:256 [m[0;33m  32816829 ns   32652492 ns [m[0;36m        21[m
+[m[0;32mquantize_per_channel/C:128/N:512 [m[0;33m  65901190 ns   65427022 ns [m[0;36m        11[m
+[m[0;32mquantize_per_channel/C:256/N:8   [m[0;33m   2197445 ns    2183257 ns [m[0;36m       313[m
+[m[0;32mquantize_per_channel/C:256/N:16  [m[0;33m   4185776 ns    4146540 ns [m[0;36m       166[m
+[m[0;32mquantize_per_channel/C:256/N:32  [m[0;33m   8813639 ns    8740528 ns [m[0;36m        84[m
+[m[0;32mquantize_per_channel/C:256/N:64  [m[0;33m  16744709 ns   16641674 ns [m[0;36m        41[m
+[m[0;32mquantize_per_channel/C:256/N:128 [m[0;33m  33167687 ns   32903641 ns [m[0;36m        21[m
+[m[0;32mquantize_per_channel/C:256/N:256 [m[0;33m  63634050 ns   63124717 ns [m[0;36m        11[m
+[m[0;32mquantize_per_channel/C:256/N:512 [m[0;33m 131632201 ns  130191782 ns [m[0;36m         5[m
+[m[0;32mquantize_per_channel/C:512/N:8   [m[0;33m   4368994 ns    4340593 ns [m[0;36m       159[m
+[m[0;32mquantize_per_channel/C:512/N:16  [m[0;33m   8665339 ns    8597329 ns [m[0;36m        82[m
+[m[0;32mquantize_per_channel/C:512/N:32  [m[0;33m  17152555 ns   17029877 ns [m[0;36m        40[m
+[m[0;32mquantize_per_channel/C:512/N:64  [m[0;33m  32962503 ns   32527022 ns [m[0;36m        22[m
+[m[0;32mquantize_per_channel/C:512/N:128 [m[0;33m  66347033 ns   65698418 ns [m[0;36m        11[m
+[m[0;32mquantize_per_channel/C:512/N:256 [m[0;33m 132691159 ns  131765325 ns [m[0;36m         5[m
+[m[0;32mquantize_per_channel/C:512/N:512 [m[0;33m 255171171 ns  253126651 ns [m[0;36m         3[m
+[m

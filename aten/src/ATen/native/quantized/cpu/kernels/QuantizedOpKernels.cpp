@@ -2529,7 +2529,7 @@ void dequantize_tensor_per_tensor_affine_cpu(
 }
 #endif // USE_FBGEMM
 
-// TODO: add fbgemm for per channel
+#ifdef USE_FBGEMM
 void quantize_tensor_per_channel_affine_cpu(
     Tensor rtensor,
     Tensor qtensor,
@@ -2661,6 +2661,101 @@ void dequantize_tensor_per_channel_affine_cpu(
         dequantize_per_channel_affine_kernel<double, int64_t, scalar_t>(qtensor, rtensor, scales, zero_points, axis);
       });
 }
+#else // USE_FBGEMM
+
+
+#if defined(__ARM_NEON__) || defined(__aarch64__)
+// Generic template defaults to naive quantize implementation
+template <typename T>
+void quantize_tensor_per_channel_arm(
+    const float* in,
+    Tensor qtensor,
+    const int64_t N,
+    const float scale,
+    const int32_t zero_point) {
+  auto out = qtensor.data_ptr<T>();
+  for (int i = 0; i < N; ++i) {
+    out[i] = at::native::quantize_val<T>(scale, zero_point, in[i]);
+  }
+}
+
+// Specialized implementation from caffe2::Int8Quantize.
+// There may be slight accuracy difference between this and implementation of
+// quantize_val
+// TODO Update quantize_tensor_arm implementation to follow quantize_val,
+// i.e. f = Round(value/scale + zero_point)
+// TODO Make quantize_tensor_arm work for other datatypes too (int8, int32).
+template <>
+void quantize_tensor_arm<c10::quint8>(
+    const float* in,
+    Tensor qtensor,
+    const int64_t N,
+    const float* scale,
+    const int32_t* zero_point) {
+  const float inv_scale = 1.0f / scale;
+  uint32_t i = 0;
+  auto out = (uint8_t*)qtensor.data_ptr<c10::quint8>();
+  const float32x4_t vinv_scale = vdupq_n_f32(inv_scale);
+#if defined(__ARM_NEON__)
+  // magic float and magic int to take care of rounding
+  // int magic_round(float f): interpret_int32(f + 12582912.0f) - 0x4B400000
+  // Some detail:
+  // 12582912.0f is 2**23 + 2**22. The trick is based on the fact that when you
+  // add a small number to a large number, the result rounds to the precision of
+  // the least significant bit of the large number. For IEEE-754
+  // single-precision number mantissa has 23 bits, and adding 2**23 would cause
+  // rounding to the nearest even integer. The we cast to int and subtract the
+  // same number (0x4B400000 is the integer representation of 12582912.0f) to
+  // get only the mantissa. This works if -2**22 < x < 2**22, but preserves the
+  // sign for negative numbers.
+  const int32x4_t voffset = vdupq_n_s32(zero_point - 0x4B400000);
+  const float32x4_t vmagic_float = vdupq_n_f32(12582912.0f);
+  for (i = 0; i + 8 < N; i += 8) {
+    const float32x4_t vin0123 = vld1q_f32(in);
+    in += 4;
+    const float32x4_t vin4567 = vld1q_f32(in);
+    in += 4;
+    const int32x4_t vraw0123 = vaddq_s32(
+        voffset,
+        vreinterpretq_s32_f32(
+            vaddq_f32(vmagic_float, vmulq_f32(vin0123, vinv_scale))));
+    const int32x4_t vraw4567 = vaddq_s32(
+        voffset,
+        vreinterpretq_s32_f32(
+            vaddq_f32(vmagic_float, vmulq_f32(vin4567, vinv_scale))));
+    const int16x8_t vraw01234567 =
+        vcombine_s16(vqmovn_s32(vraw0123), vqmovn_s32(vraw4567));
+    const uint8x8_t vout01234567 = vqmovun_s16(vraw01234567);
+    vst1_u8(out, vout01234567);
+    out += 8;
+  }
+  for (; i < N; ++i) {
+    (*out++) = at::native::quantize_val_arm(scale, zero_point, (*in++));
+  }
+#else
+  const int16x8_t vzero_point = vdupq_n_s16((int16_t)(uint16_t)zero_point);
+  for (i = 0; i + 8 < N; i += 8) {
+    const float32x4_t vin0123 = vld1q_f32(in);
+    in += 4;
+    const float32x4_t vin4567 = vld1q_f32(in);
+    in += 4;
+    const int32x4_t v0123_rounded = vcvtnq_s32_f32(vmulq_f32(vin0123, vinv_scale));
+    const int32x4_t v4567_rounded = vcvtnq_s32_f32(vmulq_f32(vin4567, vinv_scale));
+    const int16x8_t v01234567_packed = vqaddq_s16(
+        vqmovn_high_s32(vqmovn_s32(v0123_rounded), v4567_rounded), vzero_point);
+    const uint8x8_t vout01234567 = vqmovun_s16(v01234567_packed);
+    vst1_u8(out, vout01234567);
+    out += 8;
+  }
+  for (; i < N; ++i) {
+    (*out++) = at::native::quantize_val_arm(scale, zero_point, (*in++));
+  }
+#endif
+}
+
+#endif // defined(__ARM_NEON__) || defined(__aarch64__)
+
+#endif // USE_FBGEMM
 
 // quantize stubs for floating point scale and zero_point.
 void quantize_tensor_per_channel_float_qparams_cpu(
